@@ -1,0 +1,10 @@
+ninja_dyndep_version = 1.0
+build CMakeFiles/parser.dir/generated/bison/parser.tab.cpp.o: dyndep | CMakeFiles/parser.dir/ast.pcm
+
+build CMakeFiles/parser.dir/parser/src/parse_error.cpp.o: dyndep | CMakeFiles/parser.dir/ast.pcm
+
+build CMakeFiles/parser.dir/parser/src/check_variables.cpp.o: dyndep
+
+build CMakeFiles/parser.dir/parser/src/ast.cppm.o | CMakeFiles/parser.dir/ast.pcm: dyndep
+  restat = 1
+

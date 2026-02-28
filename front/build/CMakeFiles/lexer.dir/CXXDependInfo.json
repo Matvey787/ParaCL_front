@@ -1,0 +1,37 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "",
+	"config" : "",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/build",
+	"dir-cur-src" : "/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front",
+	"dir-top-bld" : "/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/build",
+	"dir-top-src" : "/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"generated/flex",
+		"/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/lexer/src/inc",
+		"generated/bison",
+		"/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/parser/src",
+		"/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/lexer/inc"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : 
+	[
+		"/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/build/CMakeFiles/parser.dir"
+	],
+	"module-dir" : "/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/build/CMakeFiles/lexer.dir",
+	"sources" : 
+	{
+		"CMakeFiles/lexer.dir/generated/flex/lexer.yy.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/build/generated/flex/lexer.yy.cpp"
+		}
+	}
+}

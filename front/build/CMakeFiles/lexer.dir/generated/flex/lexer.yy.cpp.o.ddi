@@ -1,0 +1,14 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "CMakeFiles/lexer.dir/generated/flex/lexer.yy.cpp.o",
+      "requires": [
+        {
+          "logical-name": "ast"
+        }
+      ]
+    }
+  ],
+  "version": 1
+}

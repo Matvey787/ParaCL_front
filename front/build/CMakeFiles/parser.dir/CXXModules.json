@@ -1,0 +1,19 @@
+{
+	"modules" : 
+	{
+		"ast" : 
+		{
+			"bmi" : "/home/matvey/work/Vladimirov/ParaCL/paracl_compiler/front/build/CMakeFiles/parser.dir/ast.pcm",
+			"is-private" : false
+		}
+	},
+	"references" : 
+	{
+		"ast" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/parser.dir/ast.pcm"
+		}
+	},
+	"usages" : {}
+}

@@ -1,0 +1,14 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "CMakeFiles/parser.dir/generated/bison/parser.tab.cpp.o",
+      "requires": [
+        {
+          "logical-name": "ast"
+        }
+      ]
+    }
+  ],
+  "version": 1
+}

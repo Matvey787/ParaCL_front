@@ -1,0 +1,12 @@
+{
+	"modules" : {},
+	"references" : 
+	{
+		"ast" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/parser.dir/ast.pcm"
+		}
+	},
+	"usages" : {}
+}
