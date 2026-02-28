@@ -1,0 +1,14 @@
+.venv
+build/
+.vscode/
+settings.json
+*.png
+Doxyfile
+imgs/
+logs/
+.cache
+ast-dump/
+tmp/
+*.dot
+paracl_build/
+dot-out/
