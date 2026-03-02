@@ -1,4 +1,4 @@
-.venv
+.venv/
 build/
 .vscode/
 settings.json
@@ -12,3 +12,4 @@ tmp/
 *.dot
 paracl_build/
 dot-out/
+*.json

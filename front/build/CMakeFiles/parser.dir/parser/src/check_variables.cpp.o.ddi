@@ -1,9 +1,0 @@
-{
-  "revision": 0,
-  "rules": [
-    {
-      "primary-output": "CMakeFiles/parser.dir/parser/src/check_variables.cpp.o"
-    }
-  ],
-  "version": 1
-}

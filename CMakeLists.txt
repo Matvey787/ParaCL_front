@@ -1,23 +1,61 @@
 # =============================================================================
 # front/CMakeLists.txt
 # =============================================================================
-
 cmake_minimum_required(VERSION 3.28)
-project(ParaCL_Front LANGUAGES CXX)
+project(ParaCL_Front VERSION 3.0.0)
+
+set(AUTHORS 
+    "Matthew Galicin|https://github.com/Matvey787"
+    "Max Sebelev|https://github.com/Maksim-Sebelev"
+)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Подключаем проверки инструментов
+
+# generate project info
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/projInfo.cmake)
+
+
+
+
+# all dependencies
+find_package(LLVM REQUIRED CONFIG)
+llvm_map_components_to_libnames(llvm_libs Support)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/deps/check-bison.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/deps/check-flex.cmake)
 
-# ====================== PATHS ======================
-set(FRONT_SRC_DIR      ${CMAKE_CURRENT_SOURCE_DIR})
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog)
+
+
+
+
+
+
+
+add_library(ast STATIC)
+
+target_sources(ast
+    PUBLIC
+        FILE_SET CXX_MODULES
+        TYPE CXX_MODULES
+        FILES
+            ${CMAKE_CURRENT_SOURCE_DIR}/ast/ast.cppm
+            ${CMAKE_CURRENT_SOURCE_DIR}/ast/astToJSON.cppm
+            ${CMAKE_CURRENT_SOURCE_DIR}/ast/JSONToAst.cppm
+)
+
+
+
+
+
+
+
+
 
 # ====================== BISON (Parser) ======================
-set(PARSER_SRC_DIR          ${FRONT_SRC_DIR}/parser/src)
+set(PARSER_SRC_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/parser)
 set(BISON_PARSER_CPP_OUT    parser.tab.cpp)
 set(BISON_PARSER_HPP_OUT    parser.tab.hpp)
 set(BISON_INPUT_FILE        ${PARSER_SRC_DIR}/parser.y)
@@ -44,16 +82,32 @@ target_sources(parser
         ${BISON_OUTPUT_DIR}/${BISON_PARSER_CPP_OUT}
         ${PARSER_SRC_DIR}/parse_error.cpp
         ${PARSER_SRC_DIR}/check_variables.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog/include
 )
 
 target_include_directories(parser
     PUBLIC
-        ${BISON_OUTPUT_DIR}          # parser.tab.hpp
+        ${BISON_OUTPUT_DIR} # parser.tab.hpp
         ${PARSER_SRC_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/lexer/inc
 )
 
+target_link_libraries(parser 
+    PRIVATE
+        ast
+        spdlog::spdlog_header_only
+)
+
+
+
+
+
+
+
+
+
 # ====================== FLEX (Lexer) ======================
-set(LEXER_SRC_DIR          ${FRONT_SRC_DIR}/lexer/src)
+set(LEXER_SRC_DIR          ${CMAKE_CURRENT_SOURCE_DIR}/lexer/src)
 set(FLEX_LEXER_CPP_OUT     lexer.yy.cpp)
 set(FLEX_INPUT_FILE        ${LEXER_SRC_DIR}/lexer.l)
 set(FLEX_OUTPUT_DIR        ${CMAKE_BINARY_DIR}/generated/flex)
@@ -67,7 +121,7 @@ add_custom_command(
         ${FLEX_INPUT_FILE}
     DEPENDS
         ${FLEX_INPUT_FILE}
-        ${BISON_OUTPUT_DIR}/${BISON_PARSER_HPP_OUT}   # lexer зависит от токенов парсера
+        ${BISON_OUTPUT_DIR}/${BISON_PARSER_HPP_OUT}
     COMMENT "Generating Flex lexer (${FLEX_LEXER_CPP_OUT})"
     VERBATIM
 )
@@ -81,13 +135,12 @@ target_sources(lexer
 
 target_include_directories(lexer
     PUBLIC
-        ${FLEX_OUTPUT_DIR}                     # lexer.yy.cpp
-        ${LEXER_SRC_DIR}/inc                   # lexer.hpp
-        ${BISON_OUTPUT_DIR}                    # parser.tab.hpp
+        ${FLEX_OUTPUT_DIR}   # lexer.yy.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/lexer/inc/
+        ${BISON_OUTPUT_DIR}  # parser.tab.hpp
         ${PARSER_SRC_DIR}
 )
 
-# Связываем lexer с parser (нужен для yy::parser::token::...)
 target_link_libraries(lexer PRIVATE parser)
 
 # ====================== Main executable ======================
@@ -95,11 +148,27 @@ add_executable(paracl main.cpp)
 
 target_link_libraries(paracl
     PRIVATE
-        parser
+        boost_json
         lexer
+        parser
+        ${llvm_libs}
+)
+
+target_sources(paracl
+    PUBLIC
+        FILE_SET CXX_MODULES
+        TYPE CXX_MODULES
+        FILES
+            ${CMAKE_CURRENT_SOURCE_DIR}/general/compileOpts.cppm
+            ${CMAKE_CURRENT_SOURCE_DIR}/general/general.cppm
+            
 )
 
 target_include_directories(paracl
-    PRIVATE
-        ${FRONT_SRC_DIR}
+    PRIVATE 
+        ${LLVM_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_BINARY_DIR}/generated # projInfo.hpp
+        spdlog::spdlog_header_only
+        ${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog/include
 )
+target_compile_definitions(paracl PRIVATE ${LLVM_DEFINITIONS})
