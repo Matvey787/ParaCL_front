@@ -1,12 +1,12 @@
 # =============================================================================
 # front/CMakeLists.txt
 # =============================================================================
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.30)
 project(ParaCL_Front VERSION 3.0.0)
 
 set(AUTHORS 
-    "Matthew Galicin|https://github.com/Matvey787"
     "Max Sebelev|https://github.com/Maksim-Sebelev"
+    "Matthew Galicin|https://github.com/Matvey787"
 )
 
 set(CMAKE_CXX_STANDARD 23)
@@ -27,24 +27,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/deps/check-bison.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/deps/check-flex.cmake)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog)
-
-
-
-
-
-
-
-add_library(ast STATIC)
-
-target_sources(ast
-    PUBLIC
-        FILE_SET CXX_MODULES
-        TYPE CXX_MODULES
-        FILES
-            ${CMAKE_CURRENT_SOURCE_DIR}/ast/ast.cppm
-            ${CMAKE_CURRENT_SOURCE_DIR}/ast/astToJSON.cppm
-            ${CMAKE_CURRENT_SOURCE_DIR}/ast/JSONToAst.cppm
-)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/THE-LAST)
 
 
 
@@ -94,7 +77,7 @@ target_include_directories(parser
 
 target_link_libraries(parser 
     PRIVATE
-        ast
+        TheLast
         spdlog::spdlog_header_only
 )
 

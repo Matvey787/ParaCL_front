@@ -7,10 +7,11 @@ module;
 #include <utility>
 #include <exception>
 #include <sstream>
+#include <filesystem>
 
 export module compileOpts;
 
-llvm::cl::opt<std::string> OutputFileName(
+llvm::cl::opt<std::filesystem::path> OutputFileName(
     "o",
     llvm::cl::desc("Specify output filename"),
     llvm::cl::value_desc("filename"),
@@ -23,7 +24,7 @@ llvm::cl::alias OutputAlias(
     llvm::cl::aliasopt(OutputFileName)
 );
 
-llvm::cl::opt<std::string> AstDumpFile(
+llvm::cl::opt<std::filesystem::path> AstDumpFile(
     "d",
     llvm::cl::desc("Dump AST to .dot file for Graphviz"),
     llvm::cl::value_desc("filename"),
@@ -48,7 +49,7 @@ llvm::cl::opt<bool> ShowHelp(
     llvm::cl::init(false)
 );
 
-llvm::cl::list<std::string> InputFiles(
+llvm::cl::list<std::filesystem::path> InputFiles(
     llvm::cl::Positional,
     llvm::cl::desc("<input .cl file>"),
     llvm::cl::ZeroOrMore
@@ -76,7 +77,7 @@ std::string getBriefDescription()
 export namespace ParaCL::general
 {
 
-std::pair<std::string, std::string> handleCompileOpts(int argc, char** argv)
+decltype(auto) handleCompileOpts(int argc, char** argv)
 {
     std::string briefDescription = getBriefDescription();
 
@@ -98,8 +99,8 @@ std::pair<std::string, std::string> handleCompileOpts(int argc, char** argv)
         throw std::runtime_error(noInputFilesErrorMsg);
     }
 
-    std::string inputPath = InputFiles[0];
-    std::string outputPath = OutputFileName.getValue();
+    auto&& inputPath = InputFiles[0];
+    auto&& outputPath = OutputFileName.getValue();
 
     return std::make_pair(inputPath, outputPath);
 }

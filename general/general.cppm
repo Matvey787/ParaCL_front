@@ -1,8 +1,6 @@
 module;
 
-import ast;
-import astToJSON;
-import JSONToAst;
+import thelast;
 
 #include "parser.tab.hpp"
 
@@ -14,14 +12,14 @@ import JSONToAst;
 
 
 extern FILE* yyin;
-extern ParaCL::front::AST::ProgramAST program;
+extern last::AST program;
 
 export module general;
 
 export namespace ParaCL::general 
 {
 
-ParaCL::front::AST::ProgramAST generateAST(const std::string& inputFileName)
+last::AST generateAST(const std::string& inputFileName)
 {
     FILE* inputFile = fopen(inputFileName.c_str(), "r");
 
