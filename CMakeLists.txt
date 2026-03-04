@@ -127,9 +127,9 @@ target_include_directories(lexer
 target_link_libraries(lexer PRIVATE parser)
 
 # ====================== Main executable ======================
-add_executable(paracl main.cpp)
+add_executable(paracl-front src/main.cpp)
 
-target_link_libraries(paracl
+target_link_libraries(paracl-front
     PRIVATE
         boost_json
         lexer
@@ -137,7 +137,7 @@ target_link_libraries(paracl
         ${llvm_libs}
 )
 
-target_sources(paracl
+target_sources(paracl-front
     PUBLIC
         FILE_SET CXX_MODULES
         TYPE CXX_MODULES
@@ -147,11 +147,11 @@ target_sources(paracl
             
 )
 
-target_include_directories(paracl
+target_include_directories(paracl-front
     PRIVATE 
         ${LLVM_INCLUDE_DIRS}
         ${CMAKE_CURRENT_BINARY_DIR}/generated # projInfo.hpp
         spdlog::spdlog_header_only
         ${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog/include
 )
-target_compile_definitions(paracl PRIVATE ${LLVM_DEFINITIONS})
+target_compile_definitions(paracl-front PRIVATE ${LLVM_DEFINITIONS})

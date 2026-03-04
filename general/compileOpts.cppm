@@ -8,10 +8,11 @@ module;
 #include <exception>
 #include <sstream>
 #include <filesystem>
+#include <vector>
 
 export module compileOpts;
 
-// Используем std::string вместо std::filesystem::path
+
 llvm::cl::list<std::string> InputFiles(
     llvm::cl::Positional,
     llvm::cl::desc("<input .cl files>"),
@@ -19,17 +20,18 @@ llvm::cl::list<std::string> InputFiles(
     llvm::cl::value_desc("filename")
 );
 
-llvm::cl::opt<std::string> OutputFileName(
+
+llvm::cl::list<std::string> OutputPaths(
     "o",
-    llvm::cl::desc("Specify output filename"),
-    llvm::cl::value_desc("filename"),
-    llvm::cl::init("a.out")
+    llvm::cl::desc("Specify output filenames or a directory"),
+    llvm::cl::value_desc("paths"),
+    llvm::cl::ZeroOrMore
 );
 
 llvm::cl::alias OutputAlias(
     "output",
     llvm::cl::desc("Alias for -o"),
-    llvm::cl::aliasopt(OutputFileName)
+    llvm::cl::aliasopt(OutputPaths)
 );
 
 llvm::cl::opt<std::string> AstDumpFile(
@@ -79,14 +81,21 @@ std::string getBriefDescription()
 export namespace ParaCL::general
 {
 
-decltype(auto) handleCompileOpts(int argc, char** argv)
+
+struct CommandLineData
+{
+    std::vector<std::filesystem::path> inputFiles;
+    std::vector<std::filesystem::path> outputFiles;
+};
+
+CommandLineData handleCompileOpts(int argc, char** argv)
 {
     std::string briefDescription = getBriefDescription();
 
-    // Парсим аргументы
     llvm::cl::ParseCommandLineOptions(argc, argv, briefDescription);
 
-    if (ShowHelp) {
+    if (ShowHelp)
+    {
         llvm::cl::PrintHelpMessage();
         exit(0);
     }
@@ -102,11 +111,37 @@ decltype(auto) handleCompileOpts(int argc, char** argv)
         throw std::runtime_error(noInputFilesErrorMsg);
     }
 
-    // Преобразуем строки в пути
-    std::filesystem::path inputPath = InputFiles[0];
-    std::filesystem::path outputPath = OutputFileName.getValue();
+    CommandLineData data;
+    for (const auto& f : InputFiles) data.inputFiles.emplace_back(f);
 
-    return std::make_pair(inputPath, outputPath);
+    if (OutputPaths.empty()) 
+    {
+        data.outputFiles.push_back(InputFiles[0]);
+        for (size_t i = 1; i < data.inputFiles.size(); ++i) {
+            data.outputFiles.push_back(data.inputFiles[i].stem().string() + ".ast.json");
+        }
+    }
+    else if (OutputPaths.size() == 1 && std::filesystem::is_directory(OutputPaths[0]))
+    {
+        std::filesystem::path outDir = OutputPaths[0];
+        for (const auto& in : data.inputFiles)
+        {
+            data.outputFiles.push_back(outDir / in.filename().replace_extension(".ast.json"));
+        }
+    }
+    else 
+    {
+        if (OutputPaths.size() != data.inputFiles.size())
+        {
+            throw std::runtime_error(
+                "It is impossible to determine which output file corresponds to the input file; changes are possible in the future."
+            );
+        }
+        
+        for (const auto& f : OutputPaths) data.outputFiles.emplace_back(f);
+    }
+
+    return data;
 }
 
-} // namespace ParaCL::general
+} 
