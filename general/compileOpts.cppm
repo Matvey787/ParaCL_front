@@ -11,7 +11,15 @@ module;
 
 export module compileOpts;
 
-llvm::cl::opt<std::filesystem::path> OutputFileName(
+// Используем std::string вместо std::filesystem::path
+llvm::cl::list<std::string> InputFiles(
+    llvm::cl::Positional,
+    llvm::cl::desc("<input .cl files>"),
+    llvm::cl::OneOrMore,
+    llvm::cl::value_desc("filename")
+);
+
+llvm::cl::opt<std::string> OutputFileName(
     "o",
     llvm::cl::desc("Specify output filename"),
     llvm::cl::value_desc("filename"),
@@ -24,7 +32,7 @@ llvm::cl::alias OutputAlias(
     llvm::cl::aliasopt(OutputFileName)
 );
 
-llvm::cl::opt<std::filesystem::path> AstDumpFile(
+llvm::cl::opt<std::string> AstDumpFile(
     "d",
     llvm::cl::desc("Dump AST to .dot file for Graphviz"),
     llvm::cl::value_desc("filename"),
@@ -47,12 +55,6 @@ llvm::cl::opt<bool> ShowHelp(
     "h",
     llvm::cl::desc("Show this help message"),
     llvm::cl::init(false)
-);
-
-llvm::cl::list<std::filesystem::path> InputFiles(
-    llvm::cl::Positional,
-    llvm::cl::desc("<input .cl file>"),
-    llvm::cl::ZeroOrMore
 );
 
 const std::string noInputFilesErrorMsg = "No input .cl files provided.\n";
@@ -81,6 +83,7 @@ decltype(auto) handleCompileOpts(int argc, char** argv)
 {
     std::string briefDescription = getBriefDescription();
 
+    // Парсим аргументы
     llvm::cl::ParseCommandLineOptions(argc, argv, briefDescription);
 
     if (ShowHelp) {
@@ -99,8 +102,9 @@ decltype(auto) handleCompileOpts(int argc, char** argv)
         throw std::runtime_error(noInputFilesErrorMsg);
     }
 
-    auto&& inputPath = InputFiles[0];
-    auto&& outputPath = OutputFileName.getValue();
+    // Преобразуем строки в пути
+    std::filesystem::path inputPath = InputFiles[0];
+    std::filesystem::path outputPath = OutputFileName.getValue();
 
     return std::make_pair(inputPath, outputPath);
 }

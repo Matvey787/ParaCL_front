@@ -13,16 +13,8 @@ int main(int argc, char** argv)
 
     auto&& program = ParaCL::general::generateAST(inputFileName);
 
-
-    last::write(program, outputFileName.replace_extension(".json"));
-
-
-
-    // auto program_after_serialization_and_unserialization = 
-    // ParaCL::front::AST::JSONToAst<boost::json::value>(outputFileName);
-
-    // ParaCL::front::AST::astToJSON(program_after_serialization_and_unserialization, "ast.json");
-
-    // auto var = ParaCL::front::AST::make_node<Variable, boost::json::value>("x");
+    auto&& buildDir = "build/generated/json";
+    std::filesystem::create_directories(buildDir);
+    last::write(program, buildDir / outputFileName.replace_extension(".json"));
 
 }

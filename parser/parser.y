@@ -11,8 +11,13 @@
     #include <cstdio>
     #include <vector>
     #include <string>
+    
+    #include <boost/json.hpp>
+    #include <boost/json/object.hpp>
 
     import thelast;
+    #include "create-basic-node.hpp"
+    CREATE_SAME(boost::json::value())
 
     extern FILE* yyin;
     extern std::string current_file;
@@ -24,7 +29,6 @@
     #include "parse_error.hpp"
     #include "lexer.hpp"
     #include "check_variables.hpp"
-    #include "create-basic-node.hpp"
 
 
     last::AST program;
@@ -103,13 +107,15 @@ statement:
 
 assignment:
     VAR AS expression {
+        name_table.declare_or_do_nothing_if_already_declared($1);
+
         auto binop = last::node::BinaryOperator(
             last::node::BinaryOperator::BinaryOperatorT::ASGN,
             last::node::create(last::node::Variable(std::move($1))),
             std::move($3)
         );
+
         $$ = last::node::create(std::move(binop));
-        name_table.declare_or_do_nothing_if_already_declared($1);
     }
     | VAR AS error {
         ErrorHandler::throwError(@3, "expected expression after assignment");
@@ -261,13 +267,15 @@ expression: assignment_expression { $$ = std::move($1); } ;
 assignment_expression:
     logical_or_expression { $$ = std::move($1); }
     | VAR AS assignment_expression %prec AS {
+        name_table.declare_or_do_nothing_if_already_declared($1);
+
         auto binop = last::node::BinaryOperator(
             last::node::BinaryOperator::BinaryOperatorT::ASGN,
             last::node::create(last::node::Variable(std::move($1))),
             std::move($3)
         );
+        
         $$ = last::node::create(std::move(binop));
-        name_table.declare_or_do_nothing_if_already_declared($1);
     }
     ;
 
