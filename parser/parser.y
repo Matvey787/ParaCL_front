@@ -17,7 +17,7 @@
 
     import thelast;
     #include "create-basic-node.hpp"
-    CREATE_SAME(boost::json::value())
+    CREATE_SAME(boost::json::value(), last::node::dumpable)
 
     extern FILE* yyin;
     extern std::string current_file;
