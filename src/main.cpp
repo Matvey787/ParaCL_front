@@ -7,25 +7,24 @@ import compileOpts;
 import general;
 import thelast;
 
+#include "read-ast.hpp"
+
+#include <cassert>
+
 int main(int argc, char** argv) try
 {
     ParaCL::general::init_logging();
 
     auto&& [inputs, outputs] = ParaCL::general::handleCompileOpts(argc, argv);
 
-    for (size_t i = 0; i < inputs.size(); ++i)
+    for (size_t it = 0, ite = inputs.size(); it != ite; ++it)
     {
-        auto&& inputPath = inputs[i];
-        auto&& outputPath = outputs[i];
+        auto&& inputPath = inputs[it];
+        auto&& outputPath = outputs[it];
         auto&& program = ParaCL::general::generateAST(inputPath);
         auto&& parent = outputPath.parent_path();
         last::write(program, outputPath);
-
-        last::dump(program, "ast.dot", "ast.svg");
-
     }
-
-    // auto&& ast = read("");
 
     return 0;
 }
