@@ -7,10 +7,6 @@ import compileOpts;
 import general;
 import thelast;
 
-#include "read-ast.hpp"
-
-#include <cassert>
-
 int main(int argc, char** argv) try
 {
     ParaCL::general::init_logging();
