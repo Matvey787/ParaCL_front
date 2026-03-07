@@ -10,20 +10,22 @@ import thelast;
 // #include "spdlog/sinks/stdout_color_sinks.h"
 // #include "spdlog/spdlog.h"
 
-
+extern void set_current_paracl_file(std::string_view);
 extern FILE* yyin;
 extern last::AST program;
 
 export module general;
 
-export namespace ParaCL::general 
+export namespace ParaCL::general
 {
 
-last::AST generateAST(const std::string& inputFileName)
+last::AST generateAST(std::string_view inputFileName)
 {
-    FILE* inputFile = fopen(inputFileName.c_str(), "r");
 
-    if (!inputFile) throw std::runtime_error("Can't open file: " + inputFileName);
+    FILE* inputFile = std::fopen(std::string(inputFileName).c_str(), "r");
+    set_current_paracl_file(inputFileName);
+
+    if (!inputFile) throw std::runtime_error("Can't open file: " + std::string(inputFileName));
 
     yyin = inputFile;
 

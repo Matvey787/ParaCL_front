@@ -17,7 +17,7 @@ int main(int argc, char** argv) try
     {
         auto&& inputPath = inputs[it];
         auto&& outputPath = outputs[it];
-        auto&& program = ParaCL::general::generateAST(inputPath);
+        auto&& program = ParaCL::general::generateAST(inputPath.string());
         auto&& parent = outputPath.parent_path();
         last::write(program, outputPath);
     }
