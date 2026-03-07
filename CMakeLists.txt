@@ -26,7 +26,6 @@ llvm_map_components_to_libnames(llvm_libs Support)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/deps/check-bison.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/deps/check-flex.cmake)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third-party/THE-LAST)
 
 
@@ -65,7 +64,6 @@ target_sources(parser
         ${BISON_OUTPUT_DIR}/${BISON_PARSER_CPP_OUT}
         ${PARSER_SRC_DIR}/parse_error.cpp
         ${PARSER_SRC_DIR}/check_variables.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog/include
 )
 
 target_include_directories(parser
@@ -78,7 +76,6 @@ target_include_directories(parser
 target_link_libraries(parser 
     PUBLIC
         TheLast
-        spdlog::spdlog_header_only
 )
 
 
@@ -151,7 +148,5 @@ target_include_directories(paracl-front
     PRIVATE 
         ${LLVM_INCLUDE_DIRS}
         ${CMAKE_CURRENT_BINARY_DIR}/generated # projInfo.hpp
-        spdlog::spdlog_header_only
-        ${CMAKE_CURRENT_SOURCE_DIR}/third-party/spdlog/include
 )
 target_compile_definitions(paracl-front PRIVATE ${LLVM_DEFINITIONS})

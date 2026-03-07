@@ -5,10 +5,10 @@ import thelast;
 #include "parser.tab.hpp"
 
 #include <boost/json.hpp>
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
 #include <cstdio>
 #include <string_view>
+// #include "spdlog/sinks/stdout_color_sinks.h"
+// #include "spdlog/spdlog.h"
 
 
 extern FILE* yyin;
@@ -43,11 +43,11 @@ last::AST generateAST(const std::string& inputFileName)
 
 void init_logging()
 {
-    auto console = spdlog::stdout_color_mt("console");
+    // auto console = spdlog::stdout_color_mt("console");
 
     // По умолчанию уровень INFO 
-    spdlog::set_default_logger(console);
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_default_logger(console);
+    // spdlog::set_level(spdlog::level::info);
 }
 
 }; // namespace ParaCL::general
